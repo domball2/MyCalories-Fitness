@@ -358,8 +358,6 @@ function calcBF() {
   document.getElementById('bf-result').innerHTML=
     `<div class="bf-pct">${bfR}%</div>
      <div class="bf-cat">BMI: ${bmi.toFixed(1)} · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
-  highlightBFTable(parseFloat(bfR), gender, 'bf-table-hw');
-  updateBFChart(parseFloat(bfR), gender);
 }
 
 function bfCategory(bf, gender) {
@@ -376,13 +374,6 @@ function bfCategory(bf, gender) {
     if(bf<32) return {label:'Average',desc:'Acceptable range'};
     return {label:'Obese',desc:'Above healthy range'};
   }
-}
-
-function highlightBFTable(bf, gender, tableId) {
-  const cat=bfCategory(bf,gender).label;
-  const rows=document.querySelectorAll('#'+tableId+' tbody tr');
-  const catMap=['Essential Fat','Athlete','Fitness','Average','Obese'];
-  rows.forEach((r,i)=>r.className=catMap[i]===cat?'highlight':'');
 }
 
 // ── Skinfold (Jackson-Pollock 3-site) ─────────────────────────────
@@ -405,27 +396,6 @@ function calcSkinfold() {
   document.getElementById('sf-result').innerHTML=
     `<div class="bf-pct">${bfR}%</div>
      <div class="bf-cat">Sum of skinfolds: ${S}mm · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
-  updateSFTable(gender, parseFloat(bfR));
-  updateSFChart(parseFloat(bfR), gender);
-}
-
-function updateSFTable(gender, myBF) {
-  const norms = gender==='male' ? [
-    {age:'20–29', ex:'<11',  good:'11–13', avg:'14–20', poor:'>20'},
-    {age:'30–39', ex:'<12',  good:'12–15', avg:'16–21', poor:'>21'},
-    {age:'40–49', ex:'<14',  good:'14–17', avg:'18–23', poor:'>23'},
-    {age:'50–59', ex:'<15',  good:'15–18', avg:'19–24', poor:'>24'},
-    {age:'60+',   ex:'<16',  good:'16–19', avg:'20–25', poor:'>25'},
-  ] : [
-    {age:'20–29', ex:'<16',  good:'16–19', avg:'20–27', poor:'>27'},
-    {age:'30–39', ex:'<17',  good:'17–20', avg:'21–28', poor:'>28'},
-    {age:'40–49', ex:'<18',  good:'18–21', avg:'22–29', poor:'>29'},
-    {age:'50–59', ex:'<22',  good:'22–25', avg:'26–31', poor:'>31'},
-    {age:'60+',   ex:'<23',  good:'23–26', avg:'27–32', poor:'>32'},
-  ];
-  document.getElementById('sf-table-body').innerHTML=norms.map(n=>
-    `<tr><td>${n.age}</td><td>${n.ex}</td><td>${n.good}</td><td>${n.avg}</td><td>${n.poor}</td></tr>`
-  ).join('');
 }
 
 // ── Charts ─────────────────────────────────────────────────────────
