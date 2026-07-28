@@ -268,9 +268,12 @@ button.secondary:hover{background:var(--blue-soft)}
 </div>
 <p class="subtitle">A quick-reference library of body fat percentage charts and tables — the same population norms used across the Calorie Calculator Tracker, Clinical (DEXA/BIA), and AI Body Fat Calculator pages, gathered here in one place.</p>
 
-<!-- BODY FAT CATEGORY REFERENCE -->
+<!-- BODY FAT REFERENCE (BMI category chart) -->
 <div class="full-card">
   <div class="card-title">📏 Body Fat Category Reference</div>
+  <p style="font-size:12px;color:#888780;margin-bottom:12px">Your DEXA/BIA body fat % plotted against standard population ranges.</p>
+  <div class="bf-result" id="bf-result">Enter your DEXA/BIA results above.</div>
+  <div class="divider"></div>
   <p style="font-size:12px;color:#888780;margin-bottom:8px">Average body fat % ranges by category:</p>
   <div class="chart-wrap-tall"><canvas id="bfChart"></canvas></div>
   <table class="bf-table" id="bf-table-hw">
@@ -285,19 +288,19 @@ button.secondary:hover{background:var(--blue-soft)}
   </table>
 </div>
 
-<!-- JACKSON-POLLOCK NORMS REFERENCE -->
+<!-- SKINFOLD NORMS REFERENCE -->
 <div class="full-card">
   <div class="card-title">📐 Jackson-Pollock Norms Reference</div>
-  <p style="font-size:12px;color:#888780;margin-bottom:12px">Jackson-Pollock 3-site skinfold body fat % norms by age group. Toggle gender to see the matching reference table.</p>
-  <div class="tab-row">
-    <button class="tab-btn active" id="ref-tab-male" onclick="setRefGender('male',this)">Male</button>
-    <button class="tab-btn" id="ref-tab-female" onclick="setRefGender('female',this)">Female</button>
-  </div>
+  <p style="font-size:12px;color:#888780;margin-bottom:12px">Your DEXA/BIA body fat % plotted against Jackson-Pollock age-group norms (Excellent / Good / Average / Poor).</p>
+  <div class="bf-result" id="sf-result">Enter your DEXA/BIA results above.</div>
+  <div class="divider"></div>
+  <p style="font-size:12px;color:#888780;margin-bottom:8px">Jackson-Pollock body fat % norms by age group:</p>
   <div class="chart-wrap-tall"><canvas id="sfChart"></canvas></div>
   <table class="bf-table" id="sf-table">
     <thead><tr><th>Age</th><th>Excellent</th><th>Good</th><th>Average</th><th>Poor</th></tr></thead>
     <tbody id="sf-table-body"></tbody>
   </table>
+</div>
 </div>
 
 <!-- RESOURCES -->
