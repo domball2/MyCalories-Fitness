@@ -285,19 +285,6 @@ button.secondary:hover{background:var(--blue-soft)}
     <div class="setting-item"><label>Age</label><input type="number" id="bf-age" value="30" min="18" max="90" oninput="calcBF()"/></div>
   </div>
   <div class="bf-result" id="bf-result">Enter your measurements above.</div>
-  <div class="divider"></div>
-  <p style="font-size:12px;color:#888780;margin-bottom:8px">Average body fat % ranges by category:</p>
-  <div class="chart-wrap-tall"><canvas id="bfChart"></canvas></div>
-  <table class="bf-table" id="bf-table-hw">
-    <thead><tr><th>Category</th><th>Men</th><th>Women</th></tr></thead>
-    <tbody>
-      <tr><td>Essential Fat</td><td>2–5%</td><td>10–13%</td></tr>
-      <tr><td>Athletes</td><td>6–13%</td><td>14–20%</td></tr>
-      <tr><td>Fitness</td><td>14–17%</td><td>21–24%</td></tr>
-      <tr><td>Average</td><td>18–24%</td><td>25–31%</td></tr>
-      <tr><td>Obese</td><td>25%+</td><td>32%+</td></tr>
-    </tbody>
-  </table>
 </div>
 
 <!-- SKINFOLD BODY FAT TEST -->
@@ -318,15 +305,9 @@ button.secondary:hover{background:var(--blue-soft)}
     <div class="setting-item"><label>Thigh Skinfold (mm)</label><input type="number" id="sf-thigh" value="15" min="1" max="60" oninput="calcSkinfold()"/></div>
   </div>
   <div class="bf-result" id="sf-result">Enter your measurements above.</div>
-  <div class="divider"></div>
-  <p style="font-size:12px;color:#888780;margin-bottom:8px">Jackson-Pollock body fat % norms by age group:</p>
-  <div class="chart-wrap-tall"><canvas id="sfChart"></canvas></div>
-  <table class="bf-table" id="sf-table">
-    <thead><tr><th>Age</th><th>Excellent</th><th>Good</th><th>Average</th><th>Poor</th></tr></thead>
-    <tbody id="sf-table-body"></tbody>
-  </table>
 </div>
-<!-- RESOURCES -->
+
+  <!-- RESOURCES -->
 <div class="resources-card">
   <div class="card-title">📚 Resources</div>
   <a class="cite-link" href="./works-cited.html" target="_blank" rel="noopener">📄 View Works Cited — formulas &amp; data sources used in this dashboard</a>
