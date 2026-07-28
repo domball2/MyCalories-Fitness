@@ -268,12 +268,9 @@ button.secondary:hover{background:var(--blue-soft)}
 </div>
 <p class="subtitle">A quick-reference library of body fat percentage charts and tables — the same population norms used across the Calorie Calculator Tracker, Clinical (DEXA/BIA), and AI Body Fat Calculator pages, gathered here in one place.</p>
 
-<!-- BODY FAT REFERENCE (BMI category chart) -->
+<!-- BODY FAT CATEGORY REFERENCE -->
 <div class="full-card">
   <div class="card-title">📏 Body Fat Category Reference</div>
-  <p style="font-size:12px;color:#888780;margin-bottom:12px">Your DEXA/BIA body fat % plotted against standard population ranges.</p>
-  <div class="bf-result" id="bf-result">Enter your DEXA/BIA results above.</div>
-  <div class="divider"></div>
   <p style="font-size:12px;color:#888780;margin-bottom:8px">Average body fat % ranges by category:</p>
   <div class="chart-wrap-tall"><canvas id="bfChart"></canvas></div>
   <table class="bf-table" id="bf-table-hw">
@@ -288,19 +285,19 @@ button.secondary:hover{background:var(--blue-soft)}
   </table>
 </div>
 
-<!-- SKINFOLD NORMS REFERENCE -->
+<!-- JACKSON-POLLOCK NORMS REFERENCE -->
 <div class="full-card">
   <div class="card-title">📐 Jackson-Pollock Norms Reference</div>
-  <p style="font-size:12px;color:#888780;margin-bottom:12px">Your DEXA/BIA body fat % plotted against Jackson-Pollock age-group norms (Excellent / Good / Average / Poor).</p>
-  <div class="bf-result" id="sf-result">Enter your DEXA/BIA results above.</div>
-  <div class="divider"></div>
-  <p style="font-size:12px;color:#888780;margin-bottom:8px">Jackson-Pollock body fat % norms by age group:</p>
+  <p style="font-size:12px;color:#888780;margin-bottom:12px">Jackson-Pollock 3-site skinfold body fat % norms by age group. Toggle gender to see the matching reference table.</p>
+  <div class="tab-row">
+    <button class="tab-btn active" id="ref-tab-male" onclick="setRefGender('male',this)">Male</button>
+    <button class="tab-btn" id="ref-tab-female" onclick="setRefGender('female',this)">Female</button>
+  </div>
   <div class="chart-wrap-tall"><canvas id="sfChart"></canvas></div>
   <table class="bf-table" id="sf-table">
     <thead><tr><th>Age</th><th>Excellent</th><th>Good</th><th>Average</th><th>Poor</th></tr></thead>
     <tbody id="sf-table-body"></tbody>
   </table>
-</div>
 </div>
 
 <!-- RESOURCES -->
@@ -332,320 +329,7 @@ button.secondary:hover{background:var(--blue-soft)}
   <p class="creator-tiny">Creator: Dominique Ball</p>
 </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script>
 <p class="footnote">Reference data only — no personal information is stored on this page.</p>
-// ── Body Fat (BMI-based) ───────────────────────────────────────────
-function calcBF() {
-  const ft=parseFloat(document.getElementById('bf-ft').value)||0;
-  const inch=parseFloat(document.getElementById('bf-in').value)||0;
-  const wt=parseFloat(document.getElementById('bf-wt').value)||0;
-  const gender=document.getElementById('bf-gender').value;
-  const age=parseFloat(document.getElementById('bf-age').value)||30;
-  if(!wt||!(ft||inch)) return;
-  const totalIn=(ft*12)+inch;
-  const bmi=(wt/(totalIn*totalIn))*703;
-  // Deurenberg formula: BF% = (1.20 × BMI) + (0.23 × Age) − (10.8 × sex) − 5.4  [sex: male=1, female=0]
-  const sex=gender==='male'?1:0;
-  const bf=(1.20*bmi)+(0.23*age)-(10.8*sex)-5.4;
-  const bfR=Math.max(2,bf).toFixed(1);
-  const cat=bfCategory(parseFloat(bfR),gender);
-  document.getElementById('bf-result').innerHTML=
-    `<div class="bf-pct">${bfR}%</div>
-     <div class="bf-cat">BMI: ${bmi.toFixed(1)} · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
-  highlightBFTable(parseFloat(bfR), gender, 'bf-table-hw');
-  updateBFChart(parseFloat(bfR), gender);
-}
-
-function bfCategory(bf, gender) {
-  if(gender==='male'){
-    if(bf<6)  return {label:'Essential Fat',desc:'Below healthy minimum'};
-    if(bf<14) return {label:'Athlete',desc:'Excellent — athletic range'};
-    if(bf<18) return {label:'Fitness',desc:'Good — fit range'};
-    if(bf<25) return {label:'Average',desc:'Acceptable range'};
-    return {label:'Obese',desc:'Above healthy range'};
-  } else {
-    if(bf<14) return {label:'Essential Fat',desc:'Below healthy minimum'};
-    if(bf<21) return {label:'Athlete',desc:'Excellent — athletic range'};
-    if(bf<25) return {label:'Fitness',desc:'Good — fit range'};
-    if(bf<32) return {label:'Average',desc:'Acceptable range'};
-    return {label:'Obese',desc:'Above healthy range'};
-  }
-}
-
-function highlightBFTable(bf, gender, tableId) {
-  const cat=bfCategory(bf,gender).label;
-  const rows=document.querySelectorAll('#'+tableId+' tbody tr');
-  const catMap=['Essential Fat','Athlete','Fitness','Average','Obese'];
-  rows.forEach((r,i)=>r.className=catMap[i]===cat?'highlight':'');
-}
-
-// ── Skinfold (Jackson-Pollock 3-site) ─────────────────────────────
-function calcSkinfold() {
-  const gender=document.getElementById('sf-gender').value;
-  const age=parseFloat(document.getElementById('sf-age').value)||30;
-  const chest=parseFloat(document.getElementById('sf-chest').value)||0;
-  const ab=parseFloat(document.getElementById('sf-ab').value)||0;
-  const thigh=parseFloat(document.getElementById('sf-thigh').value)||0;
-  const S=chest+ab+thigh;
-  let density;
-  if(gender==='male'){
-    density=1.10938-(0.0008267*S)+(0.0000016*S*S)-(0.0002574*age);
-  } else {
-    density=1.09949-(0.0009929*S)+(0.0000023*S*S)-(0.0001392*age);
-  }
-  const bf=((4.95/density)-4.50)*100;
-  const bfR=Math.max(2,bf).toFixed(1);
-  const cat=bfCategory(parseFloat(bfR),gender);
-  document.getElementById('sf-result').innerHTML=
-    `<div class="bf-pct">${bfR}%</div>
-     <div class="bf-cat">Sum of skinfolds: ${S}mm · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
-  updateSFTable(gender, parseFloat(bfR));
-  updateSFChart(parseFloat(bfR), gender);
-}
-
-function updateSFTable(gender, myBF) {
-  const norms = gender==='male' ? [
-    {age:'20–29', ex:'<11',  good:'11–13', avg:'14–20', poor:'>20'},
-    {age:'30–39', ex:'<12',  good:'12–15', avg:'16–21', poor:'>21'},
-    {age:'40–49', ex:'<14',  good:'14–17', avg:'18–23', poor:'>23'},
-    {age:'50–59', ex:'<15',  good:'15–18', avg:'19–24', poor:'>24'},
-    {age:'60+',   ex:'<16',  good:'16–19', avg:'20–25', poor:'>25'},
-  ] : [
-    {age:'20–29', ex:'<16',  good:'16–19', avg:'20–27', poor:'>27'},
-    {age:'30–39', ex:'<17',  good:'17–20', avg:'21–28', poor:'>28'},
-    {age:'40–49', ex:'<18',  good:'18–21', avg:'22–29', poor:'>29'},
-    {age:'50–59', ex:'<22',  good:'22–25', avg:'26–31', poor:'>31'},
-    {age:'60+',   ex:'<23',  good:'23–26', avg:'27–32', poor:'>32'},
-  ];
-  document.getElementById('sf-table-body').innerHTML=norms.map(n=>
-    `<tr><td>${n.age}</td><td>${n.ex}</td><td>${n.good}</td><td>${n.avg}</td><td>${n.poor}</td></tr>`
-  ).join('');
-}
-
-// ── Charts ─────────────────────────────────────────────────────────
-const isDark=()=>window.matchMedia('(prefers-color-scheme:dark)').matches;
-const gridC=()=>isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
-const textC=()=>isDark()?'#888780':'#5F5E5A';
-
-// BF range chart (grouped bar)
-const bfCtx=document.getElementById('bfChart').getContext('2d');
-let bfMyLine=null;
-const bfChart=new Chart(bfCtx,{
-  type:'bar',
-  data:{
-    labels:['Essential Fat','Athletes','Fitness','Average','Obese'],
-    datasets:[
-      {label:'Men',data:[3.5,9.5,15.5,21,27],backgroundColor:'rgba(29,127,191,0.7)',borderRadius:4,borderSkipped:false},
-      {label:'Women',data:[11.5,17,22.5,28,36],backgroundColor:'rgba(232,155,60,0.75)',borderRadius:4,borderSkipped:false},
-    ]
-  },
-  options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:textC(),font:{size:11}}},
-      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ~${c.parsed.y}%`}}},
-    scales:{
-      x:{grid:{display:false},ticks:{color:textC(),font:{size:11}}},
-      y:{grid:{color:gridC()},ticks:{color:textC(),font:{size:11},callback:v=>v+'%'},min:0,max:42}
-    }
-  }
-});
-
-function updateBFChart(bf, gender) {
-  // add annotation line via dataset trick
-  if(bfMyLine!==null) bfChart.data.datasets.splice(2,1);
-  // draw user value as scatter point at midpoint x
-  const cats=['Essential Fat','Athletes','Fitness','Average','Obese'];
-  const cat=bfCategory(bf,gender).label;
-  const idx=cats.indexOf(cat);
-  const scatter=new Array(5).fill(null);
-  scatter[idx]=bf;
-  bfChart.data.datasets.push({
-    type:'scatter',label:'You',data:cats.map((_,i)=>i===idx?{x:i,y:bf}:null),
-    backgroundColor:'#E89B3C',pointRadius:7,pointStyle:'triangle',order:0
-  });
-  bfMyLine=true;
-  bfChart.update();
-}
-
-// Skinfold norms chart
-const sfCtx=document.getElementById('sfChart').getContext('2d');
-let sfChart=new Chart(sfCtx,{
-  type:'bar',
-  data:{
-    labels:['20–29','30–39','40–49','50–59','60+'],
-    datasets:[
-      {label:'Excellent (M)',data:[11,12,14,15,16],backgroundColor:'rgba(29,158,117,0.7)',borderRadius:3,borderSkipped:false},
-      {label:'Good (M)',    data:[13,15,17,18,19],backgroundColor:'rgba(55,138,221,0.5)',borderRadius:3,borderSkipped:false},
-      {label:'Average (M)',data:[20,21,23,24,25],backgroundColor:'rgba(239,159,39,0.5)',borderRadius:3,borderSkipped:false},
-    ]
-  },
-  options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:textC(),font:{size:11}}},
-      tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},
-    scales:{
-      x:{grid:{display:false},ticks:{color:textC(),font:{size:11}}},
-      y:{grid:{color:gridC()},ticks:{color:textC(),font:{size:11},callback:v=>v+'%'},min:0,max:42,title:{display:true,text:'Body Fat %',color:textC(),font:{size:11}}}
-    }
-  }
-});
-
-function updateSFChart(bf, gender) {
-  if(gender==='male'){
-    sfChart.data.datasets=[
-      {label:'Excellent',data:[11,12,14,15,16],backgroundColor:'rgba(29,158,117,0.7)',borderRadius:3,borderSkipped:false},
-      {label:'Good',     data:[13,15,17,18,19],backgroundColor:'rgba(55,138,221,0.6)',borderRadius:3,borderSkipped:false},
-      {label:'Average',  data:[20,21,23,24,25],backgroundColor:'rgba(239,159,39,0.55)',borderRadius:3,borderSkipped:false},
-      {label:'Poor',     data:[22,23,25,26,27],backgroundColor:'rgba(208,80,48,0.45)',borderRadius:3,borderSkipped:false},
-    ];
-  } else {
-    sfChart.data.datasets=[
-      {label:'Excellent',data:[16,17,18,22,23],backgroundColor:'rgba(29,158,117,0.7)',borderRadius:3,borderSkipped:false},
-      {label:'Good',     data:[19,20,21,25,26],backgroundColor:'rgba(55,138,221,0.6)',borderRadius:3,borderSkipped:false},
-      {label:'Average',  data:[27,28,29,31,32],backgroundColor:'rgba(239,159,39,0.55)',borderRadius:3,borderSkipped:false},
-      {label:'Poor',     data:[29,30,31,33,34],backgroundColor:'rgba(208,80,48,0.45)',borderRadius:3,borderSkipped:false},
-    ];
-  }
-  sfChart.data.datasets.push({
-    type:'scatter',label:'You',
-    data:[{x:0,y:bf},{x:1,y:bf},{x:2,y:bf},{x:3,y:bf},{x:4,y:bf}].map((_,i)=>({x:i,y:bf})),
-    backgroundColor:'#E89B3C',pointRadius:5,pointStyle:'line',borderColor:'#E89B3C',borderWidth:2,showLine:true,order:0
-  });
-  sfChart.update();
-}
-
-// ── Multi-user state / persistence ──────────────────────────────────
-function defaultState(){return{curWeight:0,targetWeight:0,heightFt:0,heightIn:0,age:0,gender:'male',activity:'1.55',goalType:'lose',foods:[],workouts:[],weights:[],wDays:[],cData:[0,0,0,0,0,0,0],photos:[]};}
-
-function loadUsers(){
-  try{
-    const r=localStorage.getItem('wld_users');
-    if(r){
-      const parsed=JSON.parse(r);
-      if(parsed.users && parsed.users.length) return parsed;
-    }
-  }catch(e){}
-  // migrate legacy single-user data if present
-  let legacy=null;
-  try{const r=localStorage.getItem('wld_state');if(r)legacy=JSON.parse(r);}catch(e){}
-  const firstState = legacy ? Object.assign(defaultState(), legacy, {photos: legacy.photos||[]}) : defaultState();
-  return {activeId:'u1', users:[{id:'u1', name:'You', state:firstState}]};
-}
-function saveUsers(){
-  try{
-    localStorage.setItem('wld_users',JSON.stringify(USERS));
-    const el=document.getElementById('save-notice');el.style.display='block';
-    clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',1500);
-    updateStorageNote();
-  }catch(e){
-    updateStorageNote(true);
-  }
-}
-function updateStorageNote(failed){
-  const note=document.getElementById('pj-storage-note');
-  if(!note)return;
-  try{
-    const bytes=new Blob([JSON.stringify(USERS)]).size;
-    const kb=(bytes/1024).toFixed(0);
-    const mb=(bytes/1024/1024).toFixed(2);
-    if(failed || bytes > 4.5*1024*1024){
-      note.textContent='⚠ Storage is nearly full ('+mb+'MB). Older or larger photos may not save — consider deleting some entries.';
-      note.className='pj-storage-note warn';
-    } else {
-      note.textContent='Storage used: '+(bytes>1024*1024?mb+'MB':kb+'KB') + ' of ~5MB browser limit.';
-      note.className='pj-storage-note';
-    }
-  }catch(e){}
-}
-
-let USERS = loadUsers();
-function activeUser(){ return USERS.users.find(u=>u.id===USERS.activeId) || USERS.users[0]; }
-let STATE = activeUser().state;
-
-function switchUser(id){
-  USERS.activeId=id;
-  STATE = activeUser().state;
-  saveUsers();
-  renderUserTabs();
-  syncSettingsInputsFromState();
-  rebuildAllCharts();
-  render();
-  renderPhotoJournal();
-}
-function addUser(){
-  const n = USERS.users.length+1;
-  const id = 'u'+Date.now();
-  USERS.users.push({id, name:'User '+n, state:defaultState()});
-  USERS.activeId = id;
-  STATE = activeUser().state;
-  saveUsers();
-  renderUserTabs();
-  syncSettingsInputsFromState();
-  rebuildAllCharts();
-  render();
-  renderPhotoJournal();
-}
-function removeUser(id, evt){
-  if(evt) evt.stopPropagation();
-  if(USERS.users.length<=1){ alert("You need at least one user."); return; }
-  const u = USERS.users.find(x=>x.id===id);
-  if(!confirm('Remove "'+(u?u.name:'this user')+'" and all of their data? This cannot be undone.')) return;
-  USERS.users = USERS.users.filter(x=>x.id!==id);
-  if(USERS.activeId===id) USERS.activeId = USERS.users[0].id;
-  STATE = activeUser().state;
-  saveUsers();
-  renderUserTabs();
-  syncSettingsInputsFromState();
-  rebuildAllCharts();
-  render();
-  renderPhotoJournal();
-}
-function renameUser(id, newName){
-  const u = USERS.users.find(x=>x.id===id);
-  if(u){ u.name = (newName||'').trim() || u.name; saveUsers(); }
-}
-function renderUserTabs(){
-  const wrap=document.getElementById('user-tabs');
-  wrap.innerHTML = USERS.users.map(u=>{
-    const isActive = u.id===USERS.activeId;
-    return `<div class="user-tab${isActive?' active':''}" onclick="switchUser('${u.id}')">
-      <input class="user-tab-name" value="${u.name.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onchange="renameUser('${u.id}', this.value)" />
-      ${USERS.users.length>1?`<span class="user-tab-x" onclick="removeUser('${u.id}', event)">×</span>`:''}
-    </div>`;
-  }).join('');
-}
-function syncSettingsInputsFromState(){
-  document.getElementById('cur-w-set').value=STATE.curWeight;
-  document.getElementById('target-w-set').value=STATE.targetWeight;
-  document.getElementById('set-ht-ft').value=STATE.heightFt||5;
-  document.getElementById('set-ht-in').value=STATE.heightIn||10;
-  document.getElementById('set-age').value=STATE.age||30;
-  document.getElementById('set-gender').value=STATE.gender||'male';
-  document.getElementById('set-activity').value=STATE.activity||'1.55';
-  document.getElementById('goal-type').value=STATE.goalType;
-  document.getElementById('bf-wt').value=STATE.curWeight;
-  document.getElementById('sf-wt').value=STATE.curWeight;
-  document.getElementById('trend-badge').innerHTML='';
-}
-function rebuildAllCharts(){
-  wChart.data.labels=[...STATE.wDays];
-  wChart.data.datasets[0].data=[...STATE.weights];
-  wChart.update();
-}
-function saveState(){ saveUsers(); }
-function clearAllData(){
-  if(!confirm('Reset ALL data for this user? This cannot be undone.'))return;
-  const u = activeUser();
-  u.state = defaultState();
-  STATE = u.state;
-  saveUsers();
-  syncSettingsInputsFromState();
-  rebuildAllCharts();
-  render();
-  renderPhotoJournal();
-}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
