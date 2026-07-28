@@ -403,6 +403,137 @@ const isDark=()=>window.matchMedia('(prefers-color-scheme:dark)').matches;
 const gridC=()=>isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
 const textC=()=>isDark()?'#888780':'#5F5E5A';
 
+// ── Multi-user state / persistence ──────────────────────────────────
+function defaultState(){return{curWeight:0,targetWeight:0,heightFt:0,heightIn:0,age:0,gender:'male',activity:'1.55',goalType:'lose',foods:[],workouts:[],weights:[],wDays:[],cData:[0,0,0,0,0,0,0],photos:[]};}
+
+function loadUsers(){
+  try{
+    const r=localStorage.getItem('wld_users');
+    if(r){
+      const parsed=JSON.parse(r);
+      if(parsed.users && parsed.users.length) return parsed;
+    }
+  }catch(e){}
+  // migrate legacy single-user data if present
+  let legacy=null;
+  try{const r=localStorage.getItem('wld_state');if(r)legacy=JSON.parse(r);}catch(e){}
+  const firstState = legacy ? Object.assign(defaultState(), legacy, {photos: legacy.photos||[]}) : defaultState();
+  return {activeId:'u1', users:[{id:'u1', name:'You', state:firstState}]};
+}
+function saveUsers(){
+  try{
+    localStorage.setItem('wld_users',JSON.stringify(USERS));
+    const el=document.getElementById('save-notice');el.style.display='block';
+    clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',1500);
+    updateStorageNote();
+  }catch(e){
+    updateStorageNote(true);
+  }
+}
+function updateStorageNote(failed){
+  const note=document.getElementById('pj-storage-note');
+  if(!note)return;
+  try{
+    const bytes=new Blob([JSON.stringify(USERS)]).size;
+    const kb=(bytes/1024).toFixed(0);
+    const mb=(bytes/1024/1024).toFixed(2);
+    if(failed || bytes > 4.5*1024*1024){
+      note.textContent='⚠ Storage is nearly full ('+mb+'MB). Older or larger photos may not save — consider deleting some entries.';
+      note.className='pj-storage-note warn';
+    } else {
+      note.textContent='Storage used: '+(bytes>1024*1024?mb+'MB':kb+'KB') + ' of ~5MB browser limit.';
+      note.className='pj-storage-note';
+    }
+  }catch(e){}
+}
+
+let USERS = loadUsers();
+function activeUser(){ return USERS.users.find(u=>u.id===USERS.activeId) || USERS.users[0]; }
+let STATE = activeUser().state;
+
+function switchUser(id){
+  USERS.activeId=id;
+  STATE = activeUser().state;
+  saveUsers();
+  renderUserTabs();
+  syncSettingsInputsFromState();
+  rebuildAllCharts();
+  render();
+  renderPhotoJournal();
+}
+function addUser(){
+  const n = USERS.users.length+1;
+  const id = 'u'+Date.now();
+  USERS.users.push({id, name:'User '+n, state:defaultState()});
+  USERS.activeId = id;
+  STATE = activeUser().state;
+  saveUsers();
+  renderUserTabs();
+  syncSettingsInputsFromState();
+  rebuildAllCharts();
+  render();
+  renderPhotoJournal();
+}
+function removeUser(id, evt){
+  if(evt) evt.stopPropagation();
+  if(USERS.users.length<=1){ alert("You need at least one user."); return; }
+  const u = USERS.users.find(x=>x.id===id);
+  if(!confirm('Remove "'+(u?u.name:'this user')+'" and all of their data? This cannot be undone.')) return;
+  USERS.users = USERS.users.filter(x=>x.id!==id);
+  if(USERS.activeId===id) USERS.activeId = USERS.users[0].id;
+  STATE = activeUser().state;
+  saveUsers();
+  renderUserTabs();
+  syncSettingsInputsFromState();
+  rebuildAllCharts();
+  render();
+  renderPhotoJournal();
+}
+function renameUser(id, newName){
+  const u = USERS.users.find(x=>x.id===id);
+  if(u){ u.name = (newName||'').trim() || u.name; saveUsers(); }
+}
+function renderUserTabs(){
+  const wrap=document.getElementById('user-tabs');
+  wrap.innerHTML = USERS.users.map(u=>{
+    const isActive = u.id===USERS.activeId;
+    return `<div class="user-tab${isActive?' active':''}" onclick="switchUser('${u.id}')">
+      <input class="user-tab-name" value="${u.name.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onchange="renameUser('${u.id}', this.value)" />
+      ${USERS.users.length>1?`<span class="user-tab-x" onclick="removeUser('${u.id}', event)">×</span>`:''}
+    </div>`;
+  }).join('');
+}
+function syncSettingsInputsFromState(){
+  document.getElementById('cur-w-set').value=STATE.curWeight;
+  document.getElementById('target-w-set').value=STATE.targetWeight;
+  document.getElementById('set-ht-ft').value=STATE.heightFt||5;
+  document.getElementById('set-ht-in').value=STATE.heightIn||10;
+  document.getElementById('set-age').value=STATE.age||30;
+  document.getElementById('set-gender').value=STATE.gender||'male';
+  document.getElementById('set-activity').value=STATE.activity||'1.55';
+  document.getElementById('goal-type').value=STATE.goalType;
+  document.getElementById('bf-wt').value=STATE.curWeight;
+  document.getElementById('sf-wt').value=STATE.curWeight;
+  document.getElementById('trend-badge').innerHTML='';
+}
+function rebuildAllCharts(){
+  wChart.data.labels=[...STATE.wDays];
+  wChart.data.datasets[0].data=[...STATE.weights];
+  wChart.update();
+}
+function saveState(){ saveUsers(); }
+function clearAllData(){
+  if(!confirm('Reset ALL data for this user? This cannot be undone.'))return;
+  const u = activeUser();
+  u.state = defaultState();
+  STATE = u.state;
+  saveUsers();
+  syncSettingsInputsFromState();
+  rebuildAllCharts();
+  render();
+  renderPhotoJournal();
+}
+
 // ── Save / Reset helpers ─────────────────────────────────────────────
 function saveData(){
   saveState();
