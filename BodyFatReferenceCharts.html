@@ -378,26 +378,68 @@ let sfChart=new Chart(sfCtx,{
   }
 });
 
-function sfNorms(gender){
-  return gender==='male' ? [
-    {age:'20–29', ex:'<11',  good:'11–13', avg:'14–20', poor:'>20'},
-    {age:'30–39', ex:'<12',  good:'12–15', avg:'16–21', poor:'>21'},
-    {age:'40–49', ex:'<14',  good:'14–17', avg:'18–23', poor:'>23'},
-    {age:'50–59', ex:'<15',  good:'15–18', avg:'19–24', poor:'>24'},
-    {age:'60+',   ex:'<16',  good:'16–19', avg:'20–25', poor:'>25'},
-  ] : [
-    {age:'20–29', ex:'<16',  good:'16–19', avg:'20–27', poor:'>27'},
-    {age:'30–39', ex:'<17',  good:'17–20', avg:'21–28', poor:'>28'},
-    {age:'40–49', ex:'<18',  good:'18–21', avg:'22–29', poor:'>29'},
-    {age:'50–59', ex:'<22',  good:'22–25', avg:'26–31', poor:'>31'},
-    {age:'60+',   ex:'<23',  good:'23–26', avg:'27–32', poor:'>32'},
-  ];
+// ── Body Fat (BMI-based) ───────────────────────────────────────────
+function calcBF() {
+  const ft=parseFloat(document.getElementById('bf-ft').value)||0;
+  const inch=parseFloat(document.getElementById('bf-in').value)||0;
+  const wt=parseFloat(document.getElementById('bf-wt').value)||0;
+  const gender=document.getElementById('bf-gender').value;
+  const age=parseFloat(document.getElementById('bf-age').value)||30;
+  if(!wt||!(ft||inch)) return;
+  const totalIn=(ft*12)+inch;
+  const bmi=(wt/(totalIn*totalIn))*703;
+  // Deurenberg formula: BF% = (1.20 × BMI) + (0.23 × Age) − (10.8 × sex) − 5.4  [sex: male=1, female=0]
+  const sex=gender==='male'?1:0;
+  const bf=(1.20*bmi)+(0.23*age)-(10.8*sex)-5.4;
+  const bfR=Math.max(2,bf).toFixed(1);
+  const cat=bfCategory(parseFloat(bfR),gender);
+  document.getElementById('bf-result').innerHTML=
+    `<div class="bf-pct">${bfR}%</div>
+     <div class="bf-cat">BMI: ${bmi.toFixed(1)} · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
 }
 
-function setRefGender(gender, btn){
-  document.querySelectorAll('#ref-tab-male,#ref-tab-female').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+function bfCategory(bf, gender) {
+  if(gender==='male'){
+    if(bf<6)  return {label:'Essential Fat',desc:'Below healthy minimum'};
+    if(bf<14) return {label:'Athlete',desc:'Excellent — athletic range'};
+    if(bf<18) return {label:'Fitness',desc:'Good — fit range'};
+    if(bf<25) return {label:'Average',desc:'Acceptable range'};
+    return {label:'Obese',desc:'Above healthy range'};
+  } else {
+    if(bf<14) return {label:'Essential Fat',desc:'Below healthy minimum'};
+    if(bf<21) return {label:'Athlete',desc:'Excellent — athletic range'};
+    if(bf<25) return {label:'Fitness',desc:'Good — fit range'};
+    if(bf<32) return {label:'Average',desc:'Acceptable range'};
+    return {label:'Obese',desc:'Above healthy range'};
+  }
+}
 
+// ── Skinfold (Jackson-Pollock 3-site) ─────────────────────────────
+function calcSkinfold() {
+  const gender=document.getElementById('sf-gender').value;
+  const age=parseFloat(document.getElementById('sf-age').value)||30;
+  const chest=parseFloat(document.getElementById('sf-chest').value)||0;
+  const ab=parseFloat(document.getElementById('sf-ab').value)||0;
+  const thigh=parseFloat(document.getElementById('sf-thigh').value)||0;
+  const S=chest+ab+thigh;
+  let density;
+  if(gender==='male'){
+    density=1.10938-(0.0008267*S)+(0.0000016*S*S)-(0.0002574*age);
+  } else {
+    density=1.09949-(0.0009929*S)+(0.0000023*S*S)-(0.0001392*age);
+  }
+  const bf=((4.95/density)-4.50)*100;
+  const bfR=Math.max(2,bf).toFixed(1);
+  const cat=bfCategory(parseFloat(bfR),gender);
+  document.getElementById('sf-result').innerHTML=
+    `<div class="bf-pct">${bfR}%</div>
+     <div class="bf-cat">Sum of skinfolds: ${S}mm · Category: <strong>${cat.label}</strong> · ${cat.desc}</div>`;
+}
+
+// ── Charts ─────────────────────────────────────────────────────────
+const isDark=()=>window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=()=>isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+const textC=()=>isDark()?'#888780':'#5F5E5A';
   document.getElementById('sf-table-body').innerHTML=sfNorms(gender).map(n=>
     `<tr><td>${n.age}</td><td>${n.ex}</td><td>${n.good}</td><td>${n.avg}</td><td>${n.poor}</td></tr>`
   ).join('');
