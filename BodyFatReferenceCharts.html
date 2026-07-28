@@ -539,3 +539,33 @@ function updateSFChart(bf, gender) {
   sfChart.update();
 }
 
+renderUserTabs();
+syncSettingsInputsFromState();
+
+// ── Save / Reset helpers ─────────────────────────────────────────────
+function saveData(){
+  saveState();
+  const el=document.getElementById('save-notice');
+  if(el){el.style.display='block';el.textContent='💾 Data saved!';clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';el.textContent='✓ Saved';},2000);}
+}
+function resetSection(section){
+  const labels={foods:'food log',workouts:'workout log',weights:'weight history',photos:'photo journal',cData:'weekly calorie data'};
+  if(!confirm('Reset '+( labels[section]||section)+'? This cannot be undone.'))return;
+  if(section==='foods'){STATE.foods=[];}
+  else if(section==='workouts'){STATE.workouts=[];}
+  else if(section==='weights'){STATE.weights=[];STATE.wDays=[];if(typeof wChart!=='undefined'){wChart.data.labels=[];wChart.data.datasets[0].data=[];wChart.update();}}
+  else if(section==='photos'){STATE.photos=[];}
+  else if(section==='cData'){STATE.cData=[0,0,0,0,0,0,0];}
+  saveState();render();if(typeof renderPhotoJournal!=='undefined')renderPhotoJournal();
+}
+
+['fn','fc'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')addFood()}));
+document.getElementById('w-val').addEventListener('keydown',e=>{if(e.key==='Enter')logWeight()});
+document.getElementById('pj-date').value = new Date().toISOString().slice(0,10);
+
+// init calculators with defaults
+calcBF();calcSkinfold();updateSFTable('male',0);render();
+renderPhotoJournal();
+</script>
+</body>
+</html>
