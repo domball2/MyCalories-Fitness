@@ -1,46 +1,51 @@
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Homepage -->
   <url>
     <loc>https://mycalories.fitness/</loc>
-    <lastmod>2026-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Calculators -->
   <url>
-    <loc>https://mycalories.fitness/calorie-calculator.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://mycalories.fitness/calculators/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://mycalories.fitness/dexa-calorie-calculator.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://mycalories.fitness/calorie-tracker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://mycalories.fitness/ai-body-fat-calculator.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://mycalories.fitness/clinical-calorie-tracker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://mycalories.fitness/bmi-body-fat-calculator</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://mycalories.fitness/ai-body-fat/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://mycalories.fitness/works-cited.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://mycalories.fitness/bmi-body-fat/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- References -->
+  <url>
+    <loc>https://mycalories.fitness/works-cited/</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
+```
