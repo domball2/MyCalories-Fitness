@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MyCalories Fitness | Free Calorie, Macro &amp; Body Fat Calculators</title>
+<meta name="description" content="Free, science-based tools to calculate calories, track macros, and measure body composition — from a simple daily tracker to DEXA-grade clinical inputs and AI photo analysis."/>
+<link rel="canonical" href="https://mycalories.fitness/"/>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="MyCalories Fitness"/>
+<meta property="og:title" content="MyCalories Fitness | Free Calorie, Macro &amp; Body Fat Calculators"/>
+<meta property="og:description" content="Four free tools for calories, macros, and body composition — standard tracking, clinical DEXA/BIA input, AI photo estimation, and BMI/body fat calculators."/>
+<meta property="og:image" content="https://mycalories.fitness/logo_gradient_v2.png"/>
+<meta property="og:url" content="https://mycalories.fitness/"/>
+<meta name="twitter:card" content="summary"/>
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon.ico"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MyCalories Fitness",
+  "url": "https://mycalories.fitness/",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Any (Web)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free calorie, macro, and body composition calculators including a clinical DEXA/BIA mode, an AI body fat photo estimator, and a BMI/body fat tracker."
+}
+</script>
+
+<style>
+:root{
+  --blue:#1D7FBF;
+  --blue-dark:#0E4A78;
+  --blue-soft:#DCEBFA;
+  --blue-soft-dark:#0d2d4a;
+  --blue-tint:#F3F8FD;
+  --orange:#E89B3C;
+  --orange-dark:#8A4B0C;
+  --orange-soft:#FCEAD3;
+  --orange-soft-dark:#4a2e0c;
+  --ink:#1a1a18;
+  --sub:#5f5e5a;
+  --faint:#888780;
+  --paper:#f5f5f3;
+  --line:rgba(0,0,0,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+@media(prefers-color-scheme:dark){
+  body{background:#151513;color:#f0ede8}
+}
+.display{font-family:'Sora',-apple-system,BlinkMacSystemFont,sans-serif}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+@media(max-width:560px){.wrap{padding:0 18px}}
+
+/* ── header ─────────────────────────────────────────── */
+header.site{
+  position:sticky;top:0;z-index:40;
+  background:rgba(245,245,243,.86);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+@media(prefers-color-scheme:dark){
+  header.site{background:rgba(21,21,19,.86);border-bottom-color:rgba(255,255,255,.08)}
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.brand img{width:30px;height:30px;object-fit:contain}
+.brand b{color:var(--blue)}
+.brand span{color:var(--orange-dark)}
+@media(prefers-color-scheme:dark){.brand span{color:var(--orange)}}
+.nav-links{display:flex;align-items:center;gap:22px}
+.nav-links a.textlink{font-size:13.5px;font-weight:600;color:var(--sub)}
+.nav-links a.textlink:hover{color:var(--blue)}
+@media(max-width:720px){.nav-links a.textlink{display:none}}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:700;
+  padding:10px 18px;border-radius:999px;
+  border:1px solid var(--blue);
+  background:var(--blue);color:#fff;
+  transition:transform .15s ease,background .15s ease,box-shadow .15s ease;
+  white-space:nowrap;
+}
+.btn:hover{background:var(--blue-dark);border-color:var(--blue-dark);transform:translateY(-1px)}
+.btn.outline{background:transparent;color:var(--blue);border-color:rgba(29,127,191,.45)}
+.btn.outline:hover{background:var(--blue-soft)}
+@media(prefers-color-scheme:dark){
+  .btn.outline{color:#7FB8E8}
+  .btn.outline:hover{background:var(--blue-soft-dark)}
+}
+.btn.yt{background:#fff;color:#1a1a18;border-color:var(--line)}
+.btn.yt:hover{background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.10)}
+@media(prefers-color-scheme:dark){.btn.yt{background:#232320;color:#f0ede8;border-color:rgba(255,255,255,.12)}}
+
+/* ── hero ───────────────────────────────────────────── */
+.hero{padding:84px 0 56px;text-align:center}
+@media(max-width:560px){.hero{padding:56px 0 40px}}
+.hero-logo{width:96px;height:96px;margin:0 auto 22px;object-fit:contain}
+.hero h1.wordmark{
+  font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin-bottom:14px;
+}
+@media(max-width:560px){.hero h1.wordmark{font-size:32px}}
+.hero h1.wordmark .b1{color:var(--blue)}
+.hero h1.wordmark .b2{color:var(--orange-dark)}
+@media(prefers-color-scheme:dark){.hero h1.wordmark .b2{color:var(--orange)}}
+.hero .tagline{
+  font-size:19px;color:var(--sub);max-width:560px;margin:0 auto 34px;line-height:1.55;font-weight:500;
+}
+@media(max-width:560px){.hero .tagline{font-size:16px}}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.hero-ctas .btn{padding:14px 26px;font-size:14.5px;border-radius:12px}
+.scrollcue{
+  width:34px;height:34px;border-radius:50%;border:1px solid rgba(29,127,191,.4);
+  display:flex;align-items:center;justify-content:center;margin:0 auto;color:var(--blue);
+  animation:bob 2.2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media(prefers-reduced-motion:reduce){.scrollcue{animation:none}}
+
+/* ── tools section ──────────────────────────────────── */
+.tools{padding:64px 0 76px;border-top:1px solid var(--line)}
+@media(prefers-color-scheme:dark){.tools{border-top-color:rgba(255,255,255,.08)}}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 46px}
+.eyebrow{
+  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-dark);
+  margin-bottom:10px;
+}
+@media(prefers-color-scheme:dark){.eyebrow{color:#7FB8E8}}
+.sec-head h2{font-size:30px;font-weight:800;letter-spacing:-.015em;margin-bottom:12px}
+@media(max-width:560px){.sec-head h2{font-size:24px}}
+.sec-head p{color:var(--sub);font-size:15.5px;line-height:1.6}
+
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.tool-grid{grid-template-columns:1fr}}
+
+.tool-card{
+  display:block;position:relative;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:26px 26px 24px;border-top:3px solid var(--blue);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+@media(prefers-color-scheme:dark){.tool-card{background:#201f1c;border-color:rgba(255,255,255,.1)}}
+.tool-card:nth-child(2n){border-top-color:var(--orange)}
+.tool-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(15,40,60,.10)}
+.tool-card:nth-child(2n):hover{box-shadow:0 14px 32px rgba(90,55,10,.10)}
+
+.tool-icon{
+  width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--blue-soft);color:var(--blue-dark);margin-bottom:16px;
+}
+.tool-card:nth-child(2n) .tool-icon{background:var(--orange-soft);color:var(--orange-dark)}
+@media(prefers-color-scheme:dark){
+  .tool-icon{background:var(--blue-soft-dark);color:#7FB8E8}
+  .tool-card:nth-child(2n) .tool-icon{background:var(--orange-soft-dark);color:var(--orange)}
+}
+.tool-icon svg{width:24px;height:24px}
+
+.tool-card h3{font-size:18.5px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
+.tool-card .sub{
+  font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--blue);margin-bottom:12px;display:block;
+}
+.tool-card:nth-child(2n) .sub{color:var(--orange-dark)}
+@media(prefers-color-scheme:dark){.tool-card:nth-child(2n) .sub{color:var(--orange)}}
+
+.tool-card p.desc{font-size:13.5px;line-height:1.6;color:var(--sub);margin-bottom:18px}
+
+.tool-open{
+  display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--blue-dark);
+}
+.tool-card:nth-child(2n) .tool-open{color:var(--orange-dark)}
+@media(prefers-color-scheme:dark){
+  .tool-open{color:#7FB8E8}
+  .tool-card:nth-child(2n) .tool-open{color:var(--orange)}
+}
+.tool-open svg{width:14px;height:14px;transition:transform .18s ease}
+.tool-card:hover .tool-open svg{transform:translateX(3px)}
+
+/* ── youtube band ───────────────────────────────────── */
+.ytband{
+  background:linear-gradient(120deg,var(--blue) 0%,var(--blue-dark) 55%,#0a3357 100%);
+  color:#fff;padding:56px 0;position:relative;overflow:hidden;
+}
+.ytband::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,155,60,.35),transparent 70%);
+}
+.ytband .inner{
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;
+}
+.ytband .copy{max-width:560px}
+.ytband .eyebrow2{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#BFE0FA;margin-bottom:10px}
+.ytband h2{font-size:26px;font-weight:800;letter-spacing:-.01em;margin-bottom:10px}
+@media(max-width:560px){.ytband h2{font-size:21px}}
+.ytband p{font-size:14.5px;color:#D9EAF6;line-height:1.6}
+.yt-play{
+  width:64px;height:64px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 10px 26px rgba(0,0,0,.25);
+}
+.yt-play svg{width:22px;height:22px;margin-left:3px}
+.ytband .cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ytband .handle{font-size:13px;color:#BFE0FA;font-weight:600;margin-top:14px}
+
+/* ── footer ─────────────────────────────────────────── */
+footer.site{padding:40px 0 48px;border-top:1px solid var(--line)}
+@media(prefers-color-scheme:dark){footer.site{border-top-color:rgba(255,255,255,.08)}}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.foot-brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px}
+.foot-brand img{width:22px;height:22px}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-size:13px;color:var(--sub);font-weight:600}
+.foot-links a:hover{color:var(--blue)}
+.foot-copy{font-size:12px;color:var(--faint);margin-top:22px;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a href="./index.html" class="brand display">
+      <img src="./logo_gradient_v2.png" alt="MyCalories Fitness logo"/>
+      <span><b>MyCalories</b> <span>Fitness</span></span>
+    </a>
+    <nav class="nav-links">
+      <a class="textlink" href="#tools">Calculators</a>
+      <a class="textlink" href="https://youtube.com/@mycaloriesfitness?si=V0m7CQQBxKSLtlka" target="_blank" rel="noopener">YouTube</a>
+      <a class="btn" href="./calorie-calculator.html">Start Tracking</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero wrap">
+    <img class="hero-logo" src="./logo_gradient_v2.png" alt="MyCalories Fitness heart logo"/>
+    <h1 class="wordmark display"><span class="b1">MyCalories</span> <span class="b2">Fitness</span></h1>
+    <p class="tagline">Free, science-based calculators for calories, macros, and body composition — from a quick daily tracker to clinical-grade DEXA input and AI photo analysis.</p>
+    <div class="hero-ctas">
+      <a class="btn" href="./calorie-calculator.html">Start Tracking Free</a>
+      <a class="btn yt" href="https://youtube.com/@mycaloriesfitness?si=V0m7CQQBxKSLtlka" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.5v-7l6.3 3.5-6.3 3.5Z"/></svg>
+        Watch on YouTube
+      </a>
+    </div>
+    <a class="scrollcue" href="#tools" aria-label="Scroll to calculators">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="tools" id="tools">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Four tools, one clear picture</div>
+        <h2 class="display">Choose how you want to track</h2>
+        <p>Every calculator runs entirely in your browser and uses established, peer-reviewed formulas — pick the level of detail that fits how you train and eat.</p>
+      </div>
+
+      <div class="tool-grid">
+
+        <a class="tool-card" href="./calorie-calculator.html">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c0-1-.5-2-1-3 1 0 3 2 3 6a7 7 0 1 1-14 0c0-4 3-7 4-9 .5-1 1.5-1.5 2-1Z"/></svg>
+          </div>
+          <h3>Calorie Calculator Tracker</h3>
+          <span class="sub">Track Progress &amp; Health</span>
+          <p class="desc">Calculate your daily calorie and macro needs, then log meals and workouts to track weight and progress over time.</p>
+          <span class="tool-open">Open tool
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="tool-card" href="./dexa-calorie-calculator.html">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v2M16 4v2M3 10h18M8 15h3M8 18h5"/></svg>
+          </div>
+          <h3>Clinical Calorie Calculator Tracker</h3>
+          <span class="sub">DEXA &amp; BIA Body Composition Tracking</span>
+          <p class="desc">Enter DEXA or BIA scan results to build a clinical-grade calorie and macro plan based on your true lean mass and body fat.</p>
+          <span class="tool-open">Open tool
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="tool-card" href="./ai-body-fat-calculator.html">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2h6l2 2h3v12H4V7Z"/><circle cx="12" cy="13" r="3.5"/><path d="M18.5 9.5h.01"/></svg>
+          </div>
+          <h3>AI Body Fat Calculator</h3>
+          <span class="sub">Estimate Body Fat Percentage From Photos</span>
+          <p class="desc">Upload a photo and let an in-browser AI model estimate your body fat percentage instantly — no measurements required.</p>
+          <span class="tool-open">Open tool
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="tool-card" href="./bmi-body-fat-calculator.html">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7h1.5M8 11h1.5M8 15h1.5M14.5 7H16M14.5 11H16M14.5 15H16"/><rect x="6" y="3" width="12" height="18" rx="2"/></svg>
+          </div>
+          <h3>BMI &amp; Body Fat Calculator</h3>
+          <span class="sub">Track Your Body Composition Progress</span>
+          <p class="desc">Calculate BMI and body fat percentage with proven formulas, then track how your composition changes over time.</p>
+          <span class="tool-open">Open tool
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUTUBE -->
+  <section class="ytband">
+    <div class="wrap inner">
+      <div class="copy">
+        <div class="eyebrow2">On YouTube</div>
+        <h2 class="display">Learn the science behind the numbers</h2>
+        <p>Walkthroughs of every calculator, nutrition breakdowns, and training tips from the MyCalories Fitness channel.</p>
+        <div class="cta-row" style="margin-top:20px">
+          <a class="btn yt" href="https://youtube.com/@mycaloriesfitness?si=V0m7CQQBxKSLtlka" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.5v-7l6.3 3.5-6.3 3.5Z"/></svg>
+            Subscribe on YouTube
+          </a>
+        </div>
+        <div class="handle">@mycaloriesfitness</div>
+      </div>
+      <a class="yt-play" href="https://youtube.com/@mycaloriesfitness?si=V0m7CQQBxKSLtlka" target="_blank" rel="noopener" aria-label="Watch on YouTube">
+        <svg viewBox="0 0 24 24" fill="#1D7FBF"><path d="M8 5v14l11-7L8 5Z"/></svg>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-inner">
+      <a href="./index.html" class="foot-brand">
+        <img src="./logo_gradient_v2.png" alt="MyCalories Fitness"/>
+        MyCalories Fitness
+      </a>
+      <div class="foot-links">
+        <a href="./calorie-calculator.html">Calorie Tracker</a>
+        <a href="./dexa-calorie-calculator.html">Clinical Tracker</a>
+        <a href="./ai-body-fat-calculator.html">AI Body Fat</a>
+        <a href="./bmi-body-fat-calculator.html">BMI Calculator</a>
+        <a href="./works-cited.html">Works Cited</a>
+        <a href="https://youtube.com/@mycaloriesfitness?si=V0m7CQQBxKSLtlka" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+    <div class="foot-copy">&copy; <span id="yr"></span> MyCalories Fitness. All calculators run locally in your browser — no data leaves your device.</div>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
